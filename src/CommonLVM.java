@@ -5,6 +5,12 @@ public class CommonLVM {
     private int size;
     private UUID uuid;
 
+    public CommonLVM(String name)
+    {
+        this.name = name;
+        this.uuid = UUID.randomUUID();
+    }
+
     public CommonLVM(String name, int size)
     {
         this.name = name;
@@ -18,5 +24,13 @@ public class CommonLVM {
 
     public int getSize() {
         return size;
+    }
+
+    public void setSize(int size){
+        this.size = size;
+    }
+
+    public UUID getUuid() {
+        return uuid;
     }
 }
