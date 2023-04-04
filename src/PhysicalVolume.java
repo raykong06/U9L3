@@ -1,8 +1,31 @@
-public class PhysicalVolume extends CommonLVM{
-    private PhysicalHardDrive PHD;
-    public PhysicalVolume(String name, String PHDname, int size)
+public class PhysicalVolume extends CommonLVM implements Comparable{
+    private PhysicalHardDrive drive;
+    private VolumeGroup volumeGroup;
+    public PhysicalVolume(String name, PhysicalHardDrive drive)
     {
-        super(name);
-        PHD = new PhysicalHardDrive(PHDname, size);
+        super(name, drive.getSize());
+        this.drive = drive;
+    }
+
+    public void setVolumeGroup(VolumeGroup volumeGroup)
+    {
+        this.volumeGroup = volumeGroup;
+    }
+
+    public VolumeGroup getVolumeGroup() {
+        return volumeGroup;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        PhysicalVolume other = (PhysicalVolume) o;
+        if (other.getVolumeGroup() != null)
+        {
+            return this.getVolumeGroup().getName().compareTo(other.getVolumeGroup().getName());
+        }
+        else
+        {
+            return this.getName().compareTo(other.getName());
+        }
     }
 }

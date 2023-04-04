@@ -11,6 +11,7 @@ public class VolumeGroup extends CommonLVM{
         this.logicalVolumes = logicalVolumes;
     }
 
+    @Override
     public int getSize(){
         int size = 0;
         for (PhysicalVolume pv : physicalVolumes){

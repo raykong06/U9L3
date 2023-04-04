@@ -26,7 +26,7 @@ public class CommonLVM {
         return size;
     }
 
-    public void setSize(int size){
+    public void setSize(int size) {
         this.size = size;
     }
 
