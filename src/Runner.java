@@ -106,6 +106,124 @@ public class Runner {
                     System.out.println("[" + physicalVolume.getUuid().toString() + "]");
                 }
             }
+            else if (input.startsWith("vgcreate"))
+            {
+                String vgName = input.substring(input.indexOf(" ") + 1);
+                String pvName = vgName.substring(vgName.indexOf(" ") + 1);
+                vgName = vgName.substring(0, vgName.indexOf(" "));
+
+                boolean valid = false;
+
+                PhysicalVolume intendedPV = null;
+
+                for (PhysicalVolume physicalVolume : lvm.getPhysicalVolumes())
+                {
+                    if (physicalVolume.getName().equals(pvName))
+                    {
+                        valid = true;
+                    }
+                }
+                if (!valid)
+                {
+                    System.out.println("Error. No physical volume can be found under this name.");
+                }
+
+                for (PhysicalVolume physicalVolume : lvm.getPhysicalVolumes())
+                {
+                    if (physicalVolume.getName().equals(pvName))
+                    {
+                        if (physicalVolume.getVolumeGroup() != null)
+                        {
+                            System.out.println("Error. This physical volume is already assigned to a volume group.");
+                            valid = false;
+                        }
+                        else
+                        {
+                            intendedPV = physicalVolume;
+                        }
+                    }
+                }
+
+                for (VolumeGroup volumeGroup : lvm.getVolumeGroups())
+                {
+                    if (volumeGroup.getName().equals(vgName))
+                    {
+                        System.out.println("Error. The name is already assigned to a volume group.");
+                        valid = false;
+                    }
+                }
+
+                if (valid)
+                {
+                    lvm.installVolumeGroup(vgName, intendedPV);
+                    System.out.println("Volume Group " + vgName + " installed with Physical Volume " + pvName + ".");
+                }
+            }
+            else if (input.startsWith("vgextend"))
+            {
+                String vgName = input.substring(input.indexOf(" ") + 1);
+                String pvName = vgName.substring(vgName.indexOf(" ") + 1);
+                vgName = vgName.substring(0, vgName.indexOf(" "));
+
+                boolean valid = false;
+                boolean pvValid = false;
+                boolean vgValid = false;
+
+                PhysicalVolume intendedPV = null;
+                VolumeGroup intendedVG = null;
+
+                for (PhysicalVolume physicalVolume : lvm.getPhysicalVolumes())
+                {
+                    if (physicalVolume.getName().equals(pvName))
+                    {
+                        valid = true;
+                    }
+                }
+                if (!pvValid)
+                {
+                    System.out.println("Error. No physical volume can be found under this name.");
+                }
+
+                for (VolumeGroup volumeGroup : lvm.getVolumeGroups())
+                {
+                    if (volumeGroup.getName().equals(vgName))
+                    {
+                        valid = true;
+                        intendedVG = volumeGroup;
+                    }
+                }
+                if (!vgValid)
+                {
+                    System.out.println("Error. No volume group can be found under this name.");
+                }
+
+                if (pvValid && vgValid)
+                {
+                    valid = true;
+                }
+
+                for (PhysicalVolume physicalVolume : lvm.getPhysicalVolumes())
+                {
+                    if (physicalVolume.getName().equals(pvName))
+                    {
+                        if (physicalVolume.getVolumeGroup() != null)
+                        {
+                            System.out.println("Error. This physical volume is already assigned to a volume group.");
+                            valid = false;
+                        }
+                        else
+                        {
+                            intendedPV = physicalVolume;
+                        }
+                    }
+                }
+
+                if (valid)
+                {
+                    lvm.extendVolumeGroup(intendedVG, intendedPV);
+                    System.out.println("Volume Group " + vgName + " extended with Physical Volume " + pvName + ".");
+                }
+            }
             else
             {
                 System.out.println("Error. Invalid Command.");

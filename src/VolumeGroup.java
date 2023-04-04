@@ -4,11 +4,14 @@ public class VolumeGroup extends CommonLVM{
     private ArrayList<PhysicalVolume> physicalVolumes;
     private ArrayList<LogicalVolume> logicalVolumes;
 
-    public VolumeGroup(String name, ArrayList<PhysicalVolume> physicalVolumes, ArrayList<LogicalVolume> logicalVolumes)
+    public VolumeGroup(String name)
     {
         super(name);
-        this.physicalVolumes = physicalVolumes;
-        this.logicalVolumes = logicalVolumes;
+    }
+
+    public void addPhysicalVolume(PhysicalVolume physicalVolume)
+    {
+        physicalVolumes.add(physicalVolume);
     }
 
     @Override
