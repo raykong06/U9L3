@@ -1,8 +1,8 @@
 import java.util.ArrayList;
 
 public class VolumeGroup extends CommonLVM{
-    private ArrayList<PhysicalVolume> physicalVolumes;
-    private ArrayList<LogicalVolume> logicalVolumes;
+    private ArrayList<PhysicalVolume> physicalVolumes = new ArrayList<PhysicalVolume>();
+    private ArrayList<LogicalVolume> logicalVolumes = new ArrayList<LogicalVolume>();
 
     public VolumeGroup(String name)
     {
@@ -12,6 +12,10 @@ public class VolumeGroup extends CommonLVM{
     public void addPhysicalVolume(PhysicalVolume physicalVolume)
     {
         physicalVolumes.add(physicalVolume);
+    }
+
+    public void addLogicalVolume(LogicalVolume logicalVolume) {
+        logicalVolumes.add(logicalVolume);
     }
 
     @Override

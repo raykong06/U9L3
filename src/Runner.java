@@ -176,7 +176,7 @@ public class Runner {
                 {
                     if (physicalVolume.getName().equals(pvName))
                     {
-                        valid = true;
+                        pvValid = true;
                     }
                 }
                 if (!pvValid)
@@ -188,7 +188,7 @@ public class Runner {
                 {
                     if (volumeGroup.getName().equals(vgName))
                     {
-                        valid = true;
+                        vgValid = true;
                         intendedVG = volumeGroup;
                     }
                 }
@@ -222,6 +222,92 @@ public class Runner {
                 {
                     lvm.extendVolumeGroup(intendedVG, intendedPV);
                     System.out.println("Volume Group " + vgName + " extended with Physical Volume " + pvName + ".");
+                }
+            }
+            else if (input.equals("vglist"))
+            {
+                for (VolumeGroup volumeGroup : lvm.getVolumeGroups())
+                {
+                    System.out.print(volumeGroup.getName() + ": total: [" + volumeGroup.getSize()
+                            + "G] available:[" + volumeGroup.getSizeLeft() + "G] [");
+                    boolean first = true;
+                    for (PhysicalVolume physicalVolume : lvm.getPhysicalVolumes())
+                    {
+                        if (physicalVolume.getVolumeGroup() != null && physicalVolume.getVolumeGroup().equals(volumeGroup))
+                        {
+                            if (!first)
+                            {
+                                System.out.print(", " + physicalVolume.getName());
+                            }
+                            else
+                            {
+                                System.out.print(physicalVolume.getName());
+                                first = false;
+                            }
+                        }
+                    }
+                    System.out.println("] [" + volumeGroup.getUuid().toString() + "]");
+                }
+            }
+            else if (input.startsWith("lvcreate"))
+            {
+                String lvName = input.substring(input.indexOf(" ") + 1);
+                String strSize = lvName.substring(lvName.indexOf(" ") + 1);
+                String vgName = strSize.substring(strSize.indexOf(" ") + 1);
+                strSize = strSize.substring(0, strSize.indexOf("G"));
+                int size = Integer.parseInt(strSize);
+                lvName = lvName.substring(0, lvName.indexOf(" "));
+
+                boolean valid = false;
+                boolean lvValid = true;
+                boolean vgValid = false;
+
+                VolumeGroup intendedVG = null;
+
+                // no existing lv name
+                // find the vg
+                // enough space in the vg
+
+                for (VolumeGroup volumeGroup : lvm.getVolumeGroups())
+                {
+                    if (volumeGroup.getName().equals(vgName))
+                    {
+                        vgValid = true;
+                        intendedVG = volumeGroup;
+                    }
+                }
+                if (!vgValid)
+                {
+                    System.out.println("Error. No volume group can be found under this name.");
+                }
+
+                if (vgValid)
+                {
+                    if (size > intendedVG.getSizeLeft())
+                    {
+                        vgValid = false;
+                        System.out.println("Error. The intended volume group does not have enough space to fit a logical volume of this size.");
+                    }
+                }
+
+                for (LogicalVolume logicalVolume : lvm.getLogicalVolumes())
+                {
+                    if (logicalVolume.getName().equals(lvName))
+                    {
+                        System.out.println("Error. The name is already assigned to a logical volume.");
+                        lvValid = false;
+                    }
+                }
+
+                if (lvValid && vgValid)
+                {
+                    valid = true;
+                }
+
+                if (valid)
+                {
+                    lvm.installLogicalVolume(lvName, size, intendedVG);
+                    System.out.println("Logical Volume " + lvName + " has been installed to Volume Group " + vgName + ".");
                 }
             }
             else

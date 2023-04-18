@@ -19,7 +19,7 @@ public class PhysicalVolume extends CommonLVM implements Comparable{
     @Override
     public int compareTo(Object o) {
         PhysicalVolume other = (PhysicalVolume) o;
-        if (other.getVolumeGroup() != null)
+        if (this.getVolumeGroup() != null && other.getVolumeGroup() != null)
         {
             return this.getVolumeGroup().getName().compareTo(other.getVolumeGroup().getName());
         }
